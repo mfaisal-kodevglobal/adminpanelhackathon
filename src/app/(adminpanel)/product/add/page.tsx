@@ -97,11 +97,11 @@ export default function AddProduct() {
 
         {/* Content Area */}
         <main className="ml-[270px] max-lg:ml-0 max-lg:w-full p-6 bg-[#070b18] min-h-screen w-full">
-          <h1 className="text-white text-3xl font-semibold">Product Page</h1>
+          <h1 className="text-white text-3xl font-semibold">Product</h1>
 
           {/* Add Product Form */}
           <div className="p-4 mx-auto max-w-xl bg-white font-[sans-serif] mt-8">
-            <h1 className="text-2xl text-gray-800 font-bold text-center">Add Product</h1>
+            <h1 className="text-2xl text-gray-800 font-bold text-center">Add</h1>
             <form onSubmit={handleSubmit} className="mt-8 space-y-4">
               <input
                 type="text"

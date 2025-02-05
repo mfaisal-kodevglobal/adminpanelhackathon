@@ -144,7 +144,7 @@ export default function EditProduct() {
 
         {/* Content Area */}
         <main className="ml-[270px] max-lg:ml-0 max-lg:w-full p-6 bg-[#070b18] min-h-screen w-full">
-          <h1 className="text-white text-3xl font-semibold">Edit Product</h1>
+          <h1 className="text-white text-3xl font-semibold">Edit</h1>
 
           {/* Edit Product Form */}
           <div className="p-4 mx-auto max-w-xl bg-white font-[sans-serif] mt-8">
