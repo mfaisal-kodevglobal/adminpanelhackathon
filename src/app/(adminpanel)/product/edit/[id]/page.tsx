@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation'; // Using Next.js navigation hooks
 import SidebarMenu from '../../../admincomponents/SidebarMenu'; // Assuming this exists
@@ -26,12 +26,23 @@ export default function EditProduct() {
   const [loading, setLoading] = useState(true); // Loading state for fetching product
   const [error, setError] = useState<string | null>(null); // Error handling
   const [formErrors, setFormErrors] = useState<Partial<ProductData>>({}); // For storing form validation errors
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Authentication state
   const router = useRouter();
   const productId = window.location.pathname.split('/').pop(); // Extract product ID from URL
 
+  // Check if the user is authenticated when the component mounts
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("adminLoggedIn");
+    if (loggedIn === "true") {
+      setIsAuthenticated(true); // User is authenticated
+    } else {
+      router.push("/"); // Redirect to login page if not authenticated
+    }
+  }, [router]);
+
   // Fetch the product data based on the product ID
   useEffect(() => {
-    if (productId) {
+    if (productId && isAuthenticated) {
       const fetchProductData = async () => {
         try {
           const query = `*[_type == "products" && _id == $productId][0]`;
@@ -56,7 +67,7 @@ export default function EditProduct() {
 
       fetchProductData();
     }
-  }, [productId]);
+  }, [productId, isAuthenticated]);
 
   // Handle text input changes
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -91,7 +102,7 @@ export default function EditProduct() {
 
     try {
       // Prepare updated product data
-      const updatedProduct:any = {
+      const updatedProduct: any = {
         _id: productId,
         _type: 'products',
         name: productData.name,
@@ -113,7 +124,16 @@ export default function EditProduct() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (!isAuthenticated) {
+    return null; // Prevent rendering if not authenticated
+  }
+
+  if (loading) return (
+    <div className="relative bg-[#070b18] h-full min-h-screen font-[sans-serif] flex justify-center items-center">
+      <div className="text-white text-xl">Please Wait, Product is Loading...</div>
+    </div>
+  );
+  
   if (error) return <div>{error}</div>;
 
   return (

@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -22,10 +22,14 @@ export default function Admin() {
 
   // Handle login action
   const handleLogin = () => {
-    if (email === "admin@faisalfurniture.com" && password === "password123") {
+    // Fetch credentials from environment variables
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+
+    if (email === adminEmail && password === adminPassword) {
       localStorage.setItem("adminLoggedIn", "true");
       setIsAuthenticated(true);
-      router.push("/admin/dashboard"); // Redirect to dashboard after successful login
+      router.push("/dashboard"); // Redirect to dashboard after successful login
     } else {
       alert("Invalid credentials, please try again!");
     }
@@ -57,7 +61,7 @@ export default function Admin() {
               placeholder="Enter Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-4 py-3 bg-gray-100 w-full text-sm outline-[#333] rounded-sm transition-all"
+              className="px-4 py-3 bg-gray-100 w-full text-sm text-black outline-[#333] rounded-sm transition-all"
             />
 
             <div className="relative">
@@ -66,7 +70,7 @@ export default function Admin() {
                 placeholder="Enter Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="px-4 py-3 bg-gray-100 w-full text-sm outline-[#333] rounded-sm transition-all"
+                className="px-4 py-3 bg-gray-100 w-full text-sm text-black outline-[#333] rounded-sm transition-all"
               />
             </div>
 
@@ -86,6 +90,8 @@ export default function Admin() {
         </div>
       </main>
     );
+  } else {
+    router.push("/dashboard"); // Redirect to dashboard after successful login
   }
 
   return (

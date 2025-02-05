@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import SidebarMenu from "../admincomponents/SidebarMenu";
 import client from "@/sanity/sanity.client"; // Adjust path to your sanity client
 
@@ -21,17 +22,26 @@ export default function Product() {
   const [products, setProducts] = useState<Product[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
+  // Check if the user is authenticated when the component mounts
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("adminLoggedIn");
+    if (loggedIn === "true") {
+      setIsAuthenticated(true); // User is authenticated
+      fetchProducts(); // Fetch products only if authenticated
+    } else {
+      router.push("/"); // Redirect to login page if not authenticated
+    }
+  }, [router]);
 
   // Fetch products from Sanity using useEffect
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const query = "*[_type == 'products']"; // Query to fetch all products
-      const fetchedProducts = await client.fetch(query);
-      setProducts(fetchedProducts);
-    };
-
-    fetchProducts();
-  }, []);
+  const fetchProducts = async () => {
+    const query = "*[_type == 'products']"; // Query to fetch all products
+    const fetchedProducts = await client.fetch(query);
+    setProducts(fetchedProducts);
+  };
 
   // Handle product deletion
   const handleDeleteClick = (productId: string) => {
@@ -56,6 +66,10 @@ export default function Product() {
   const handleDeleteCancel = () => {
     setShowConfirmation(false); // Hide confirmation modal
   };
+
+  if (!isAuthenticated) {
+    return null; // Prevent rendering of the product page if not authenticated
+  }
 
   return (
     <>

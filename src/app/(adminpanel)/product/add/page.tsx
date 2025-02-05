@@ -1,6 +1,7 @@
 'use client'; // This marks the component as client-side
 
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import SidebarMenu from '../../admincomponents/SidebarMenu'; // Assuming this exists
 import client from '@/sanity/sanity.client'; // Adjust path to your sanity client
 
@@ -23,6 +24,18 @@ export default function AddProduct() {
     description: '',
     category: '',
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
+  // Check if the user is authenticated when the component mounts
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("adminLoggedIn");
+    if (loggedIn === "true") {
+      setIsAuthenticated(true); // User is authenticated
+    } else {
+      router.push("/"); // Redirect to login page if not authenticated
+    }
+  }, [router]);
 
   // Handle text input changes
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -71,6 +84,10 @@ export default function AddProduct() {
       alert('Failed to add product.');
     }
   };
+
+  if (!isAuthenticated) {
+    return null; // Prevent rendering if not authenticated
+  }
 
   return (
     <div className="relative bg-[#070b18] h-full min-h-screen font-[sans-serif]">
