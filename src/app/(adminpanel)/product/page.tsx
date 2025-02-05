@@ -84,7 +84,7 @@ export default function Product() {
             <div className="flex justify-between items-center mb-10">
               <h1 className="text-white text-3xl font-semibold">Product Page</h1>
               <a
-                href={`${process.env.BASE_URL}/product/add`}
+                href={`/product/add`}
                 className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300"
               >
                 Add Product
@@ -113,7 +113,7 @@ export default function Product() {
                       <td className="px-4 py-4 text-sm text-gray-800">{product.category}</td>
                       <td className="px-4 py-4 text-sm text-gray-800">
                         <a
-                          href={`${process.env.BASE_URL}/product/edit/${product._id}`}
+                          href={`product/edit/${product._id}`}
                           className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300"
                         >
                           Edit Product
