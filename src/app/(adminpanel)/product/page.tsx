@@ -1,7 +1,61 @@
-"use client"
+"use client";
+import { useEffect, useState } from "react";
 import SidebarMenu from "../admincomponents/SidebarMenu";
+import client from "@/sanity/sanity.client"; // Adjust path to your sanity client
+
+// Define the Product interface based on the schema fields
+interface Product {
+  _id: string;
+  name: string;
+  title: string;
+  slug: string;
+  price: string;
+  description: string;
+  category: string;
+  image: string;
+  thumbnail: string;
+  rating: string;
+}
 
 export default function Product() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
+
+  // Fetch products from Sanity using useEffect
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const query = "*[_type == 'products']"; // Query to fetch all products
+      const fetchedProducts = await client.fetch(query);
+      setProducts(fetchedProducts);
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Handle product deletion
+  const handleDeleteClick = (productId: string) => {
+    setProductToDelete(productId);
+    setShowConfirmation(true); // Show confirmation modal
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (productToDelete) {
+      try {
+        await client.delete(productToDelete); // Delete the product from Sanity
+        setProducts((prev) => prev.filter((product) => product._id !== productToDelete));
+        alert("Product deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting product:", error);
+        alert("Failed to delete product.");
+      }
+    }
+    setShowConfirmation(false); // Hide confirmation modal
+  };
+
+  const handleDeleteCancel = () => {
+    setShowConfirmation(false); // Hide confirmation modal
+  };
 
   return (
     <>
@@ -11,122 +65,84 @@ export default function Product() {
           <SidebarMenu />
 
           {/* Content Area */}
-          <main
-            className={`ml-[270px] max-lg:ml-0 max-lg:w-full p-6 bg-[#070b18] min-h-screen w-full ${
-              "max-lg:ml-[240px]"
-            }`}
-          >
-          <h1 className="text-white text-3xl font-semibold mb-10">Product Page</h1>
-          <a
-  href={`${process.env.BASE_URL}/product/add`}
-  className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300 mb-10"
->
-  Product Add
-</a>
+          <main className={`ml-[270px] max-lg:ml-0 max-lg:w-full p-6 bg-[#070b18] min-h-screen w-full`}>
+            {/* Heading and Add Product Button in one line */}
+            <div className="flex justify-between items-center mb-10">
+              <h1 className="text-white text-3xl font-semibold">Product Page</h1>
+              <a
+                href={`${process.env.BASE_URL}/product/add`}
+                className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300"
+              >
+                Add Product
+              </a>
+            </div>
 
-
-
+            {/* Responsive Table */}
             <div className="font-sans overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-100 whitespace-nowrap">
                   <tr>
-                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Role
-                    </th>
-                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Joined At
-                    </th>
-                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Title</th>
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Category</th>
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
                 <tbody className="bg-white divide-y divide-gray-200 whitespace-nowrap">
-                  <tr>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      John Doe
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      john@example.com
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      Admin
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      2022-05-15
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      {/* <button className="text-blue-600 mr-4">Edit</button> */}
-                      <a
-  href={`${process.env.BASE_URL}/product/edit/1`}
-  className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300 mb-10"
->
-  Product Edit
-</a>
-                      <button className="text-red-600">Delete</button>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      Jane Smith
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      jane@example.com
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      User
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      2022-07-20
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                    <a
-  href={`${process.env.BASE_URL}/product/edit/1`}
-  className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300 mb-10"
->
-  Product Edit
-</a>
-                      <button className="text-red-600">Delete</button>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      Alen doe
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      alen@example.com
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      User
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                      2022-07-21
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-800">
-                    <a
-  href={`${process.env.BASE_URL}/product/edit/1`}
-  className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300 mb-10"
->
-  Product Edit
-</a>
-                      <button className="text-red-600">Delete</button>
-                    </td>
-                  </tr>
+                  {products.map((product) => (
+                    <tr key={product._id}>
+                      <td className="px-4 py-4 text-sm text-gray-800">{product.name}</td>
+                      <td className="px-4 py-4 text-sm text-gray-800">{product.title}</td>
+                      <td className="px-4 py-4 text-sm text-gray-800">{product.price}</td>
+                      <td className="px-4 py-4 text-sm text-gray-800">{product.category}</td>
+                      <td className="px-4 py-4 text-sm text-gray-800">
+                        <a
+                          href={`${process.env.BASE_URL}/product/edit/${product._id}`}
+                          className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300"
+                        >
+                          Edit Product
+                        </a>
+                        <button
+                          className="text-red-600 ml-4"
+                          onClick={() => handleDeleteClick(product._id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           </main>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg max-w-sm w-full">
+            <h2 className="text-xl text-center font-semibold mb-4">Are you sure?</h2>
+            <p className="text-center mb-6">This action cannot be undone.</p>
+            <div className="flex justify-around">
+              <button
+                onClick={handleDeleteConfirm}
+                className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={handleDeleteCancel}
+                className="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

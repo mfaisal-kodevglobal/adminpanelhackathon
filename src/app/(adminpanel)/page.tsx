@@ -1,7 +1,100 @@
+"use client"
+import { useState } from "react";
+
 export default function Admin() {
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Function to handle the toggle of the menu
+  const toggleMenu = (menuId: number) => {
+    if (activeMenu === menuId) {
+      setActiveMenu(null); // Close if the same menu is clicked again
+    } else {
+      setActiveMenu(menuId); // Open the clicked menu
+    }
+  };
+
+  // Toggle sidebar visibility for mobile
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <>
-     <p>Login Page</p>
-    </>
+    <div className="relative bg-[#070b18] h-screen font-[sans-serif]">
+      <div className="flex">
+        {/* Sidebar */}
+        <div
+          className={`${
+            sidebarOpen ? "w-60" : "w-0"
+          } bg-gray-800 text-white transition-all ease-in-out duration-300 min-h-screen overflow-hidden`}
+        >
+          <div className="p-4">
+            <button onClick={toggleSidebar} className="text-white">
+              Close Sidebar
+            </button>
+            <ul className="mt-8 space-y-4">
+              <li>
+                <button
+                  className="text-white"
+                  onClick={() => toggleMenu(1)}
+                >
+                  Menu 1
+                </button>
+                {activeMenu === 1 && <div className="ml-4">Submenu 1</div>}
+              </li>
+              <li>
+                <button
+                  className="text-white"
+                  onClick={() => toggleMenu(2)}
+                >
+                  Menu 2
+                </button>
+                {activeMenu === 2 && <div className="ml-4">Submenu 2</div>}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <main
+          className={`flex flex-col items-center justify-center ml-[270px] max-lg:ml-0 max-lg:w-full p-6 bg-[#070b18] min-h-screen w-full transition-all duration-300 ease-in-out ${
+            sidebarOpen ? "max-lg:ml-[240px]" : "max-lg:ml-0"
+          }`}
+        >
+          <h1 className="text-white text-3xl font-semibold mb-8">
+            Welcome Admin Panel, Faisal Furniture
+          </h1>
+
+          <form className="w-full max-w-md mx-auto space-y-4 font-[sans-serif] text-[#333] mt-4">
+            <input
+              type="email"
+              placeholder="Enter Email"
+              className="px-4 py-3 bg-gray-100 w-full text-sm outline-[#333] rounded-sm transition-all"
+            />
+
+            <div className="relative">
+              <input
+                type="password"
+                placeholder="Enter Password"
+                className="px-4 py-3 bg-gray-100 w-full text-sm outline-[#333] rounded-sm transition-all"
+              />
+              {/* Add a "Show/Hide Password" toggle if necessary */}
+            </div>
+
+            <div className="flex items-center">
+              <input type="checkbox" className="w-4" />
+              <label className="text-sm ml-4 text-white">Remember me</label>
+            </div>
+
+            <button
+              type="button"
+              className="!mt-8 px-6 py-2.5 text-sm bg-[#333] hover:bg-[#222] text-white rounded-sm"
+            >
+              Submit
+            </button>
+          </form>
+        </main>
+      </div>
+    </div>
   );
 }
