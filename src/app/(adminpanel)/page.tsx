@@ -1,7 +1,3 @@
-import OurClientSay from "@/app/components/OurClientSay";
-import OurFeatures from "@/app/components/OurFeatures";
-import ShopexOffer from "@/app/components/ShopexOffer";
-
 export default function Admin() {
   return (
     <>
@@ -54,10 +50,7 @@ export default function Admin() {
         </div>
 
         {/* Our Features Section */}
-        <div className="mt-12">
-          <OurFeatures />
-          <OurClientSay/>
-        </div>
+        <div className="mt-12"></div>
       </div>
     </>
   );
