@@ -1,10 +1,10 @@
 import { mobileSchema } from "./mobile";
-import { userSchema } from "./user";
 import { productSchema } from "./products"
+import { adminUserSchema } from "./adminUser";
 
 
 export const schemaTypes = [
                             mobileSchema, 
-                            userSchema, 
-                            productSchema
+                            productSchema,
+                            adminUserSchema
                         ];
